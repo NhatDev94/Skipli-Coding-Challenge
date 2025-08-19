@@ -36,7 +36,6 @@ export default function EmployeeForm(props: EmployeeFormProps) {
     }),
     email: z.email({ message: "Invalid email address" }),
   });
-  console.log(props.defaultValue);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

@@ -8,10 +8,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
 import TableSkeleton from "../skeletons/TableSkeleton";
+import type { EmployeeType } from "@/types/user";
 
 type EmployeeTableProps = {
   isLoading: boolean;
-  employees: any[];
+  employees: EmployeeType[];
   onEdit: (phoneNumber: string) => void;
   onDelete: (phoneNumber: string) => void;
 };
@@ -51,7 +52,7 @@ export default function EmployeeTable(props: EmployeeTableProps) {
               </TableCell>
               <TableCell colSpan={2}>{employee.phoneNumber}</TableCell>
               <TableCell colSpan={2}>
-                {employee.status ? "Active" : "Inactive"}
+                {employee.isActive ? "Active" : "Inactive"}
               </TableCell>
               <TableCell colSpan={2} className="">
                 <Button

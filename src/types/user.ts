@@ -3,7 +3,7 @@ type EmployeeType = {
   email: string;
   name: string;
   role: "employee";
-  active?: boolean;
+  isActive?: boolean;
 };
 
 export type { EmployeeType };

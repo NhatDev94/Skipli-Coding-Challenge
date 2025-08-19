@@ -20,7 +20,6 @@ export default function ManageEmployee({
 }) {
   const [status, setStatus] = useState<"close" | "create" | "edit">("close");
   const [editEmployee, setEditEmployee] = useState<EmployeeType | null>(null);
-  console.log({ isLoading });
   const handleCreateEmployee = () => {
     setStatus("create");
     setEditEmployee(null);
