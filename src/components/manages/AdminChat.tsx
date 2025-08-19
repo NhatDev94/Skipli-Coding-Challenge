@@ -7,18 +7,19 @@ type AdminChatProps = {
 };
 
 export default function AdminChat(props: AdminChatProps) {
+  console.log(props.employees);
   return (
     <div className="w-full h-full">
       <Tabs
-        defaultValue={props.employees[0]?.id}
+        defaultValue={props.employees[0]?.phoneNumber}
         className="h-full w-full flex flex-row"
       >
         <div className="w-1/4 h-full ">
           <TabsList className="flex flex-col items-start pt-4">
             {props.employees.map((employee) => (
               <TabsTrigger
-                key={employee.id}
-                value={employee.id}
+                key={employee.phoneNumber}
+                value={employee.phoneNumber}
                 className="w-full text-left justify-start px-4 py-2.5 mb-1 rounded-lg data-[state=active]:bg-blue-100"
               >
                 {employee.name}
@@ -30,15 +31,15 @@ export default function AdminChat(props: AdminChatProps) {
         <div className="w-full h-full">
           {props.employees.map((employee) => (
             <TabsContent
-              value={employee.id}
-              key={employee.id}
+              value={employee.phoneNumber}
+              key={employee.phoneNumber}
               className="p-4 w-full h-full"
             >
               <div className="w-full h-full rounded-lg bg-gray-200 p-4 relative">
                 <ChatItem text="Xin chao" isOwner={true} />
                 <ChatItem text="Xin chao" isOwner={false} />
                 <div className="absolute bottom-0 left-0 w-full bg-white">
-                  <ReplyMessage key={employee.id} />
+                  <ReplyMessage key={employee.phoneNumber} />
                 </div>
               </div>
             </TabsContent>

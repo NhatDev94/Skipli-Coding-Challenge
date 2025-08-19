@@ -2,20 +2,45 @@ import ManageEmployee from "@/components/manages/ManageEmployee";
 import AdminChat from "@/components/manages/AdminChat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import employeeService from "@/services/employeeService";
+import Header from "@/components/layouts/Header";
 
 export default function Home() {
+  const auth = useAuth();
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getEmployees = async () => {
+    setIsLoading(true);
+    const res = await employeeService.getEmployees();
+    setEmployees(res.data.employees);
+    setIsLoading(false);
+  };
 
   const tabs = [
     {
       value: "manage-employee",
       label: "Manage Employee",
-      content: <ManageEmployee employees={employees} />,
+      content: (
+        <ManageEmployee
+          employees={employees}
+          getEmployees={getEmployees}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
+      ),
     },
     {
       value: "manage-task",
       label: "Manage Task",
-      content: "Manage your tasks and assignments here.",
+      content: (
+        <div className="w-full h-full flex items-center justify-center text-base font-semibold">
+          Comming soon.
+        </div>
+      ),
     },
     {
       value: "message",
@@ -24,52 +49,46 @@ export default function Home() {
     },
   ];
 
-  const getEmployees = async () => {
-    const data = [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "johnDoeasdasasdasda asdasdasdasdasdasdadasdadasdawq@gmail.com",
-        phone: "1234567890",
-        status: "unActive",
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        email: "janesmith@gmail.com",
-        phone: "1234567890",
-        status: "unActive",
-      },
-    ];
-    setEmployees(data);
-  };
-
   useEffect(() => {
-    getEmployees();
+    if (auth?.user) {
+      getEmployees();
+      return;
+    }
+    navigate("/sign-in");
   }, []);
 
   return (
     <div className="w-screen h-[100dvh] bg-white">
       {/* Header */}
-      <div className="w-full h-20 bg-black/60 fixed top-0 left-0 px-20"></div>
+      <Header />
 
       {/* Main Content */}
       <div className="w-full h-full pt-20 px-20 overflow-y-scroll">
         <Tabs
-          defaultValue="manage-employee"
+          defaultValue={
+            auth?.user?.role === "admin" ? "manage-employee" : "manage-task"
+          }
           className="h-full w-full flex flex-row "
         >
           <div className="w-1/4 h-full border-r border-black/20">
             <TabsList className="flex flex-col items-start pt-4">
-              {tabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="w-full text-left justify-start"
-                >
-                  {tab.label}
-                </TabsTrigger>
-              ))}
+              {tabs.map((tab) => {
+                if (
+                  auth?.user?.role === "employee" &&
+                  tab.value === "manage-employee"
+                ) {
+                  return null;
+                }
+                return (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="w-full text-left justify-start"
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
           </div>
 

@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 type VerifyFormProps = {
   description: string;
   onSubmit: (values: Record<string, any>) => void;
+  reSendAccessCode: () => void;
 };
 
 export default function SignInForm(props: VerifyFormProps) {
@@ -47,6 +48,13 @@ export default function SignInForm(props: VerifyFormProps) {
         formItems={formItems}
         onSubmit={props.onSubmit}
       />
+
+      <p
+        className="text-sm text-primary cursor-pointer hover:underline mt-3 w-fit mx-auto select-none"
+        onClick={props.reSendAccessCode}
+      >
+        Send new code
+      </p>
     </div>
   );
 }

@@ -3,26 +3,113 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import EmployeeTable from "../tables/EmployeeTable";
 import EmployeeDialog from "../dialogs/EmployeeDialog";
+import employeeService from "@/services/employeeService";
+import { showMessage } from "@/lib/utils";
+import type { EmployeeType } from "@/types/user";
 
-export default function ManageEmployee({ employees }: { employees: any[] }) {
+export default function ManageEmployee({
+  employees,
+  getEmployees,
+  isLoading,
+  setIsLoading,
+}: {
+  employees: EmployeeType[];
+  isLoading: boolean;
+  getEmployees: () => void;
+  setIsLoading: (state: boolean) => void;
+}) {
   const [status, setStatus] = useState<"close" | "create" | "edit">("close");
-
+  const [editEmployee, setEditEmployee] = useState<EmployeeType | null>(null);
+  console.log({ isLoading });
   const handleCreateEmployee = () => {
     setStatus("create");
+    setEditEmployee(null);
   };
 
-  const handleEditEmployee = (employeeId: number) => {
+  const handleEditEmployee = (phoneNumber: string) => {
     setStatus("edit");
+    employees.forEach((employee) => {
+      if (employee.phoneNumber === phoneNumber) {
+        setEditEmployee(employee);
+      }
+    });
   };
 
-  const handleDeleteEmployee = (employeeId: number) => {};
+  const handleDeleteEmployee = async (phoneNumber: string) => {
+    setIsLoading(true);
+    const res = await employeeService.deleteEmployee(phoneNumber);
+    if (res.data) {
+      showMessage("Delete employee successfully");
+      handleClose();
+      await getEmployees();
+      return;
+    }
+    setIsLoading(false);
+    handleClose();
+    showMessage("Something went wrong.");
+  };
 
-  const handleClose = (open: boolean) => {
+  const handleClose = () => {
     setStatus("close");
   };
 
-  const handleSubmit = (values: Record<string, any>) => {
-    console.log(values);
+  const createEmployee = async (values: Record<string, any>) => {
+    setIsLoading(true);
+    const res = await employeeService.createEmployee({
+      phoneNumber: values.phoneNumber,
+      name: values.name,
+      email: values.email,
+      role: "employee",
+    });
+    if (res.data) {
+      // tao thanh cong
+      await getEmployees();
+      showMessage("Create employees successful");
+      handleClose();
+      return;
+    }
+    showMessage("Phone number already has an account", false);
+    setIsLoading(false);
+  };
+
+  const employeeEdit = async (values: Record<string, any>) => {
+    setIsLoading(true);
+    const res = await employeeService.editEmployee(
+      {
+        phoneNumber: values.phoneNumber,
+        name: values.name,
+        email: values.email,
+        role: "employee",
+      },
+      editEmployee?.phoneNumber || ""
+    );
+    if (res.data) {
+      await getEmployees();
+      handleClose();
+      showMessage("Edit employee successfully.");
+      return;
+    }
+    setIsLoading(false);
+    showMessage("Phone number already has an account.", false);
+  };
+
+  const handleSubmit = async (values: Record<string, any>) => {
+    if (status === "create") {
+      // call api + hien thong bao success
+      createEmployee(values);
+      return;
+    }
+
+    // Edit
+    if (
+      values.phoneNumber !== editEmployee?.phoneNumber ||
+      values.name !== editEmployee?.name ||
+      values.email !== editEmployee?.email
+    ) {
+      await employeeEdit(values);
+      return;
+    }
+    handleClose();
   };
 
   return (
@@ -47,6 +134,7 @@ export default function ManageEmployee({ employees }: { employees: any[] }) {
         </div>
       </div>
       <EmployeeTable
+        isLoading={isLoading}
         employees={employees}
         onEdit={handleEditEmployee}
         onDelete={handleDeleteEmployee}
@@ -54,6 +142,7 @@ export default function ManageEmployee({ employees }: { employees: any[] }) {
 
       <EmployeeDialog
         status={status}
+        defaultValue={editEmployee}
         onClose={handleClose}
         onSubmit={handleSubmit}
       />

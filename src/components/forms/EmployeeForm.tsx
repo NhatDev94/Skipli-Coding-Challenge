@@ -3,8 +3,10 @@ import FormCustom from "./Form";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { EmployeeType } from "@/types/user";
 
 type EmployeeFormProps = {
+  defaultValue: EmployeeType | null;
   onSubmit: (values: Record<string, any>) => void;
 };
 
@@ -25,11 +27,6 @@ export default function EmployeeForm(props: EmployeeFormProps) {
       name: "email",
       placeholder: "Email",
     },
-    {
-      label: "Role",
-      name: "role",
-      placeholder: "Role",
-    },
   ];
 
   const formSchema = z.object({
@@ -38,18 +35,17 @@ export default function EmployeeForm(props: EmployeeFormProps) {
       message: "Invalid phone number",
     }),
     email: z.email({ message: "Invalid email address" }),
-    role: z.string().min(1, { message: "Role is required" }),
   });
-
+  console.log(props.defaultValue);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      phoneNumber: "",
-      email: "",
-      role: "",
+      name: props?.defaultValue?.name || "",
+      phoneNumber: props?.defaultValue?.phoneNumber || "",
+      email: props?.defaultValue?.email || "",
     },
   });
+
   return (
     <div className="">
       <FormCustom

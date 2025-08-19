@@ -7,11 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
+import TableSkeleton from "../skeletons/TableSkeleton";
 
 type EmployeeTableProps = {
+  isLoading: boolean;
   employees: any[];
-  onEdit: (employeeId: number) => void;
-  onDelete: (employeeId: number) => void;
+  onEdit: (phoneNumber: string) => void;
+  onDelete: (phoneNumber: string) => void;
 };
 
 export default function EmployeeTable(props: EmployeeTableProps) {
@@ -19,41 +21,55 @@ export default function EmployeeTable(props: EmployeeTableProps) {
     <Table className="w-full table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead className="w-14">Id</TableHead>
-          <TableHead className="">Name</TableHead>
-          <TableHead className="w-60">Email</TableHead>
-          <TableHead className="">Phone number</TableHead>
-          <TableHead className="">Status</TableHead>
-          <TableHead className="">Action</TableHead>
+          <TableHead colSpan={1}>Id</TableHead>
+          <TableHead colSpan={2}>Name</TableHead>
+          <TableHead colSpan={3}>Email</TableHead>
+          <TableHead colSpan={2}>Phone number</TableHead>
+          <TableHead colSpan={2}>Status</TableHead>
+          <TableHead colSpan={2}>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {props.employees.map((employee) => (
-          <TableRow key={employee.id}>
-            <TableCell>{employee.id}</TableCell>
-            <TableCell>{employee.name}</TableCell>
-            <TableCell className="max-w-60 line-clamp-1 text-ellipsis">
-              {employee.email}
-            </TableCell>
-            <TableCell>{employee.phone}</TableCell>
-            <TableCell>{employee.status}</TableCell>
-            <TableCell className="">
-              <Button
-                className="w-fit mr-4"
-                onClick={() => props.onEdit(employee.id)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant={"destructive"}
-                className="w-fit m-0"
-                onClick={() => props.onDelete(employee.id)}
-              >
-                Delete
-              </Button>
+        {props.isLoading && <TableSkeleton />}
+        {!props.isLoading && props.employees?.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={12}>
+              <div className="w-full py-10 rounded-lg text-base font-semibold text-center shadow bg-gray-100 select-none">
+                No employee yet
+              </div>
             </TableCell>
           </TableRow>
-        ))}
+        )}
+        {!props.isLoading &&
+          props.employees?.length > 0 &&
+          props.employees?.map((employee, index) => (
+            <TableRow key={employee.phoneNumber}>
+              <TableCell colSpan={1}>{index + 1}</TableCell>
+              <TableCell colSpan={2}>{employee.name}</TableCell>
+              <TableCell colSpan={3} className="overflow-hidden text-ellipsis">
+                {employee.email}
+              </TableCell>
+              <TableCell colSpan={2}>{employee.phoneNumber}</TableCell>
+              <TableCell colSpan={2}>
+                {employee.status ? "Active" : "Inactive"}
+              </TableCell>
+              <TableCell colSpan={2} className="">
+                <Button
+                  className="w-fit mr-4"
+                  onClick={() => props.onEdit(employee.phoneNumber)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant={"destructive"}
+                  className="w-fit m-0"
+                  onClick={() => props.onDelete(employee.phoneNumber)}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );
