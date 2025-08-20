@@ -7,6 +7,7 @@ import { API_URL } from "@/lib/env";
 import io from "socket.io-client";
 import useAuth from "@/hooks/useAuth";
 import type { MessageType } from "@/types/chat";
+import { ArrowLeft } from "lucide-react";
 const socket = io(API_URL.replace("/api", ""));
 
 type AdminChatProps = {
@@ -65,6 +66,11 @@ export default function AdminChat(props: AdminChatProps) {
   const messageReverser = [...messages];
   messageReverser.reverse();
 
+  let activeName = props.employees[0]?.name;
+  props.employees?.forEach((employee) => {
+    if (employee.phoneNumber === activeTab) activeName = employee.name;
+  });
+
   return (
     <div className="w-full h-full">
       <Tabs
@@ -76,7 +82,7 @@ export default function AdminChat(props: AdminChatProps) {
         onValueChange={(value) => setActiveTab(value)}
         className="h-full w-full flex flex-row"
       >
-        <div className="w-1/4 h-full ">
+        <div className="w-1/4 h-full">
           <TabsList className="flex flex-col items-start pt-4">
             {props.employees.map((employee) => {
               if (
@@ -88,7 +94,7 @@ export default function AdminChat(props: AdminChatProps) {
                 <TabsTrigger
                   key={employee.phoneNumber}
                   value={employee.phoneNumber}
-                  className="w-full text-left justify-start px-4 py-2.5 mb-1 rounded-lg data-[state=active]:bg-blue-100"
+                  className="w-full text-left justify-start px-4 py-2.5 mb-1 rounded-lg data-[state=active]:bg-blue-100 font-semibold capitalize "
                 >
                   {auth?.user?.role === "employee" ? "Admin" : employee.name}
                 </TabsTrigger>
@@ -102,10 +108,10 @@ export default function AdminChat(props: AdminChatProps) {
             <TabsContent
               value={employee.phoneNumber}
               key={employee.phoneNumber}
-              className="p-4 w-full h-full"
+              className="lg:p-4 w-full h-full"
             >
-              <div className="w-full h-full rounded-lg bg-gray-200 relative">
-                <div className="w-full h-[calc(100%-56px)] p-4 pb-20 overflow-y-scroll flex flex-col-reverse">
+              <div className="w-full h-full lg:rounded-lg bg-gray-200 relative">
+                <div className="w-full h-[calc(100%-56px)] p-4 pb-10 overflow-y-scroll flex flex-col-reverse">
                   {messageReverser.map((message: MessageType) => (
                     <ChatItem key={message.timestamp} message={message} />
                   ))}
@@ -123,6 +129,74 @@ export default function AdminChat(props: AdminChatProps) {
           ))}
         </div>
       </Tabs>
+
+      <div className="lg:hidden w-screen h-[100dvh] bg-white fixed top-0 left-0 z-10">
+        {activeTab !== "" && (
+          <>
+            <div className="w-full h-14 bg-primary fixed top-0 left-0 z-50 text-white flex items-center">
+              <div
+                className="px-4 py-2 cursor-pointer"
+                onClick={() => setActiveTab("")}
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </div>
+              <p className=" capitalize font-semibold">{activeName}</p>
+            </div>
+
+            <div className="w-full h-full">
+              {props.employees.map((employee) => {
+                if (employee.phoneNumber !== activeTab) return null;
+                return (
+                  <div
+                    key={employee.phoneNumber}
+                    className="lg:p-4 w-full h-full"
+                  >
+                    <div className="w-full h-full lg:rounded-lg bg-gray-200 relative">
+                      <div className="w-full h-[calc(100%-56px)] p-4 pb-20 overflow-y-scroll flex flex-col-reverse pt-20">
+                        {messageReverser.map((message: MessageType) => (
+                          <ChatItem key={message.timestamp} message={message} />
+                        ))}
+                      </div>
+
+                      <div className="absolute bottom-14 left-0 w-full bg-white">
+                        <ReplyMessage
+                          key={employee.phoneNumber}
+                          employee={employee}
+                          onSendMessage={handleSendMessage}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      {activeTab === "" && (
+        <div className="lg:hidden w-screen h-[100dvh] bg-white fixed top-0 left-0 z-10">
+          {props.employees.map((employee) => {
+            if (
+              auth?.user?.role === "employee" &&
+              auth?.user?.phoneNumber !== employee.phoneNumber
+            ) {
+              return null;
+            }
+            return (
+              <div
+                key={employee.phoneNumber}
+                className="w-full py-2 border-b border-black/10 px-4"
+                onClick={() => setActiveTab(employee.phoneNumber)}
+              >
+                <p className="max-w-[95%] line-clamp-1 text-ellipsis capitalize font-semibold">
+                  {auth?.user?.role === "employee" ? "Admin" : employee.name}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

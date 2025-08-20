@@ -42,7 +42,7 @@ export default function FormCustom(props: FormCustomProps) {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-xs" />
+                <FormMessage className="text-xs text-left" />
               </FormItem>
             )}
           />

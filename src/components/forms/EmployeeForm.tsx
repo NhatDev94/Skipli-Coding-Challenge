@@ -30,7 +30,10 @@ export default function EmployeeForm(props: EmployeeFormProps) {
   ];
 
   const formSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
+    name: z
+      .string()
+      .min(1, { message: "Name is required" })
+      .max(100, { message: "Please enter up to 100 characters." }),
     phoneNumber: z.string().regex(/^0(3|5|7|8|9)[0-9]{8}$/, {
       message: "Invalid phone number",
     }),

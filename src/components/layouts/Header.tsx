@@ -6,7 +6,7 @@ export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
   return (
-    <div className="w-full h-20 bg-gray-800 fixed top-0 left-0 px-20 flex items-center justify-between">
+    <div className="w-full h-16 lg:h-20 bg-gray-800 fixed top-0 left-0 px-4 lg:px-20 flex items-center justify-between">
       <div
         className="text-3xl font-bold select-none cursor-pointer text-white"
         onClick={() => {

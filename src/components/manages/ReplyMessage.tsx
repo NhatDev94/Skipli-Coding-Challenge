@@ -20,7 +20,7 @@ export default function ReplyMessage({
       <Input
         autoFocus
         placeholder="Reply message..."
-        className="bg-transparent rounded-t-none h-full"
+        className="bg-transparent lg:rounded-t-none h-full"
         onKeyDown={onEnter}
       />
     </div>

@@ -112,11 +112,11 @@ export default function ManageEmployee({
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full px-4 lg:px-0">
       <h2 className="text-2xl font-semibold mb-12">Manage Employee</h2>
 
-      <div className="w-full flex items-center justify-between px-4 mb-8">
-        <p className="text-lg font-semibold">4 Employee</p>
+      <div className="w-full flex items-center justify-between mb-8">
+        <p className="text-lg font-semibold">{employees?.length} Employee</p>
 
         <div className="flex items-center gap-x-4">
           <Button
@@ -127,9 +127,9 @@ export default function ManageEmployee({
             + Create Employee
           </Button>
 
-          <Button variant={"outline"} className="w-fit">
+          {/* <Button variant={"outline"} className="w-fit">
             Filter
-          </Button>
+          </Button> */}
         </div>
       </div>
       <EmployeeTable

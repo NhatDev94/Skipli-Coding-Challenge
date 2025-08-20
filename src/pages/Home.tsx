@@ -63,15 +63,15 @@ export default function Home() {
       <Header />
 
       {/* Main Content */}
-      <div className="w-full h-full pt-20 px-20 overflow-y-scroll">
+      <div className="w-full h-full pt-20 lg:px-20 overflow-y-scroll">
         <Tabs
           defaultValue={
             auth?.user?.role === "admin" ? "manage-employee" : "manage-task"
           }
-          className="h-full w-full flex flex-row "
+          className="h-full w-full lg:flex lg:flex-row "
         >
-          <div className="w-1/4 h-full border-r border-black/20">
-            <TabsList className="flex flex-col items-start pt-4">
+          <div className="w-full lg:w-1/4 lg:h-full lg:border-r lg:border-black/20 fixed bottom-0 left-0 z-20 lg:relative bg-white border-t lg:border-t-0">
+            <TabsList className="flex flex-row lg:flex-col items-start lg:pt-4">
               {tabs.map((tab) => {
                 if (
                   auth?.user?.role === "employee" &&
@@ -83,7 +83,7 @@ export default function Home() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="w-full text-left justify-start"
+                    className="w-full h-14 lg:text-left flex justify-center items-center lg:justify-start "
                   >
                     {tab.label}
                   </TabsTrigger>

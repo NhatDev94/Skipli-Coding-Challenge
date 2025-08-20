@@ -63,7 +63,7 @@ export default function Verify() {
 
   return (
     <div className="w-screen h-[100dvh] bg-white flex items-center justify-center">
-      <div className="w-[420px] shadow border border-black/20 rounded-lg px-8 py-20">
+      <div className="w-[420px] lg:shadow lg:border border-black/20 lg:rounded-lg px-8 py-20">
         {role === "admin" ? (
           <VerifyPhoneForm
             description="Please enter your code that send to your phone"

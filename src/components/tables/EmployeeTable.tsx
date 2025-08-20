@@ -19,7 +19,7 @@ type EmployeeTableProps = {
 
 export default function EmployeeTable(props: EmployeeTableProps) {
   return (
-    <Table className="w-full table-fixed">
+    <Table className="w-full lg:table-fixed">
       <TableHeader>
         <TableRow>
           <TableHead colSpan={1}>Id</TableHead>
@@ -47,7 +47,10 @@ export default function EmployeeTable(props: EmployeeTableProps) {
             <TableRow key={employee.phoneNumber}>
               <TableCell colSpan={1}>{index + 1}</TableCell>
               <TableCell colSpan={2}>{employee.name}</TableCell>
-              <TableCell colSpan={3} className="overflow-hidden text-ellipsis">
+              <TableCell
+                colSpan={3}
+                className="overflow-hidden text-ellipsis max-w-40"
+              >
                 {employee.email}
               </TableCell>
               <TableCell colSpan={2}>{employee.phoneNumber}</TableCell>
